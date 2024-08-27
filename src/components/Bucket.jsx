@@ -11,33 +11,41 @@ function Bucket(props) {
   console.log(props.bucket);
 
   const submitUpdate = (value) => {
-
-    // TODO: Write logic to call the editBucketItem prop with the supplied values
-
-    // TODO: Set the key:value pairs in the `edit` object back to empty strings
-
+    value.id = edit.id;
+    props.editBucketItem(value.id, value);
+    setEdit({
+      id: null,
+      value: '',
+      eagerness: '',
+    });
   };
 
-  // If the user is attempting to edit an item, render the bucket form with the edit variable passed as a prop
+  const completeBucketItem = (id) => {
+    let updatedBucket = props.bucket.map((item) => {
+      if (item.id === id) {
+        item.isComplete = !item.isComplete;
+      }
+      return item;
+    });
+  };
+
+  const removeBucketItem = (id) => {
+    const updatedBucket = props.bucket.filter((item) => item.id !== id);
+    props.setBucket(updatedBucket);
+  };
+
   if (edit.id) {
     return <BucketForm edit={edit} onSubmit={submitUpdate} />;
   }
 
   return props.bucket.map((item, index) => (
-    // TODO: Add a className of `bucket-row complete ${item.eagerness}` for completed items, and `bucket-row ${item.eagerness}` for non-completed items
-    // TODO: Add a key attribute set to the value of the index position
-    // Hint: use a ternary operator
-    <div className={} key={}>
-
-      {/* TODO: Add an onClick event that invokes the `completeBucketItem` method passing the item id as a argument */}
-      <div key={} onClick={}>
-          {/* TODO: Add the item text here */}
+    <div className={`bucket-row ${item.eagerness}`} key={index}>
+      <div onClick={() => completeBucketItem(item.id)}>
+          {item.text}
       </div>
       <div className="icons">
-        {/* TODO: Add an onClick event update the `edit` object with the `id`, `value`, and `eagerness` properties */}
-        <p onClick={}> ✏️</p>
-        {/* TODO: Add an onClick event that will invoke the removeBucketItem method passing in the `item.id` */}
-        <p onClick={}> 🗑️</p>
+        <p onClick={() => setEdit({ id: item.id, value: item.value, eagerness: item.eagerness })}> ✏️</p>
+        <p onClick={() => removeBucketItem(item.id)}> 🗑️</p>
       </div>
     </div>
   ));
